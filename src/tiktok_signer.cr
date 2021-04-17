@@ -1,6 +1,4 @@
-# TODO: Write documentation for `TiktokSigner`
-module TiktokSigner
-  VERSION = "0.1.0"
+require "./tiktok_signer/*"
 
-  # TODO: Put your code here
+module TiktokSigner
 end
