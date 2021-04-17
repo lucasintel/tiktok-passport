@@ -1,0 +1,13 @@
+name: tiktok_signer
+version: 0.1.0
+
+authors:
+  - kandayo <kdy@absolab.xyz>
+
+targets:
+  tiktok_signer:
+    main: src/tiktok_signer.cr
+
+crystal: 1.0.0
+
+license: MIT
