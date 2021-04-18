@@ -1,3 +1,5 @@
+require "./ext/pool"
+
 module TiktokPassport
   class SessionPool
     POOL_CAPACITY = ENV.fetch("POOL_CAPACITY", "1").to_i
@@ -39,6 +41,14 @@ module TiktokPassport
         session.recycle
         raise ex
       end
+    end
+
+    def stop
+      until @pool.pending == @pool.size
+        sleep 0.1
+      end
+
+      @pool.each_resource(&.stop)
     end
 
     private def set_query!(uri, name, value)

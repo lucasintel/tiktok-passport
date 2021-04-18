@@ -21,7 +21,6 @@ module TiktokPassport
     def initialize(remote_url : String)
       @driver = Selenium::Driver.for(:chrome, base_url: remote_url)
       @started = false
-      @stopped = false
     end
 
     def start
@@ -39,11 +38,11 @@ module TiktokPassport
     end
 
     def stop
-      return if stopped?
+      @started = false
 
-      protect_from_connection_error do
-        @stopped = true
-        @session.not_nil!.window_manager.close_window
+      begin
+        @session.not_nil!.delete
+      rescue ex
       end
     end
 
@@ -78,7 +77,7 @@ module TiktokPassport
     end
 
     def recycle
-      @started = false
+      stop
     end
 
     def started?
@@ -86,7 +85,7 @@ module TiktokPassport
     end
 
     def stopped?
-      @stopped
+      !started?
     end
 
     def protect_from_connection_error

@@ -9,8 +9,13 @@ module TiktokPassport
 
     @log_handler = HTTP::LogHandler.new(Log)
     @error_handler = HTTP::ErrorHandler.new
+    @server : HTTP::Server
 
-    def initialize(@browser_pool : SessionPool)
+    def initialize(@pool : SessionPool)
+      draw_routes
+      handlers = [@log_handler, @error_handler, route_handler]
+
+      @server = HTTP::Server.new(handlers)
     end
 
     def draw_routes
@@ -29,7 +34,7 @@ module TiktokPassport
         url = body.gets_to_end
 
         begin
-          signature = @browser_pool.sign(url)
+          signature = @pool.sign(url)
           ctx.response.print({status: "ok", data: signature}.to_json)
         rescue ex : Session::ConnectionLost
           ctx.response.status = HTTP::Status::SERVICE_UNAVAILABLE
@@ -48,15 +53,24 @@ module TiktokPassport
     end
 
     def run
-      draw_routes
+      signal = Channel(Nil).new
 
-      handlers = [@log_handler, @error_handler, route_handler]
-
-      server = HTTP::Server.new(handlers)
-      server.bind_tcp(HOST, PORT)
+      {% for signal in %w[TERM INT] %}
+        Signal::{{signal.id}}.trap do
+          Log.info { "[SIG{{signal.id}}] Received graceful stop" }
+          @server.close
+          @pool.stop
+          signal.send(nil)
+        end
+      {% end %}
 
       Log.info { "Listening on PORT #{PORT}" }
-      server.listen
+      @server.bind_tcp(HOST, PORT)
+      @server.listen
+
+      signal.receive
+
+      Log.info { "Down" }
     end
   end
 end
