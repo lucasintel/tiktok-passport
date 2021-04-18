@@ -3,8 +3,8 @@ module TiktokPassport
     def self.get_cookie(name : String) : String
       <<-JS
         return (function (cookieName) {
-          var cookiestring = RegExp(cookieName+"=[^;]+").exec(document.cookie);
-          return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
+          var cookieString = RegExp(cookieName+"=[^;]+").exec(document.cookie);
+          return decodeURIComponent(!!cookieString ? cookieString.toString().replace(/^[^=]+./, "") : "");
         })("#{name}");
       JS
     end
