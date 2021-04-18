@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - main
+
+env:
+  CRYSTAL_VERSION: '1.0.0'
+  CI: true
+
+jobs:
+  Linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: oprypin/install-crystal@v1
+        with:
+          crystal: ${{ env.CRYSTAL_VERSION }}
+      - run: shards install --ignore-crystal-version
+      - run: crystal tool format --check
+
+  Specs:
+    needs: [Linter]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: oprypin/install-crystal@v1
+        with:
+          crystal: ${{ env.CRYSTAL_VERSION }}
+      - run: shards install --ignore-crystal-version
+      - run: crystal spec
