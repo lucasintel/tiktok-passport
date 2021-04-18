@@ -4,12 +4,11 @@ module TiktokPassport
   module Browser
     class RemoteChromeSession < Browser::Session
       TARGET_URL = "https://www.tiktok.com"
-      USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) " \
-                   "Version/14.0.3 Mobile/15E148 Safari/604.1"
 
+      # Disguise as iPhone 12 Pro.
       CHROME_CAPABILITIES = [
         "--headless",
-        "--user-agent=\"#{ENV.fetch("USER_AGENT", USER_AGENT)}\"",
+        "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
         "--device_scale_factor=3",
         "--height=844",
         "--width=390",

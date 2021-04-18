@@ -16,22 +16,15 @@ module TiktokPassport
     def sign(url : String) : SignedRequest
       @pool.connection do |session|
         begin
+          uri = URI.parse(url)
           verify_fp = session.verify_fp
 
-          uri = URI.parse(url)
-          query = uri.query_params
-
-          query.delete_all("verifyFp")
-          query.delete_all("_signature")
-
-          query.add("verifyFp", verify_fp)
-          uri.query_params = query
+          set_query!(uri, name: "verifyFp", value: verify_fp)
           verified_url = uri.to_s
 
           signature = session.sign(verified_url)
 
-          query.add("_signature", signature)
-          uri.query_params = query
+          set_query!(uri, name: "_signature", value: signature)
           signed_url = uri.to_s
 
           SignedRequest.new(
@@ -46,6 +39,14 @@ module TiktokPassport
           sign(url)
         end
       end
+    end
+
+    private def set_query!(uri, name, value)
+      new_params = uri.query_params
+      new_params.delete_all(name)
+      new_params.add(name, value)
+
+      uri.query_params = new_params
     end
   end
 end
