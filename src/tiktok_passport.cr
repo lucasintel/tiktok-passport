@@ -7,7 +7,7 @@ require "./tiktok_passport/*"
 
 module TiktokPassport
   def self.run
-    pool = TiktokPassport::BrowserPool.new
+    pool = TiktokPassport::SessionPool.new
     server = TiktokPassport::Server.new(pool)
 
     server.run

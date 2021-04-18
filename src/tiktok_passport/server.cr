@@ -10,7 +10,7 @@ module TiktokPassport
     @log_handler = HTTP::LogHandler.new(Log)
     @error_handler = HTTP::ErrorHandler.new
 
-    def initialize(@browser_pool : TiktokPassport::BrowserPool)
+    def initialize(@browser_pool : SessionPool)
     end
 
     def draw_routes
@@ -21,7 +21,7 @@ module TiktokPassport
         if body.nil?
           ctx.response.status = HTTP::Status::UNPROCESSABLE_ENTITY
           ctx.response.print(
-            {status: "error", status_detail: "missing request url"}
+            {status: "error", message: "Missing target URL"}.to_json
           )
           next ctx
         end
@@ -31,7 +31,13 @@ module TiktokPassport
         begin
           signature = @browser_pool.sign(url)
           ctx.response.print({status: "ok", data: signature}.to_json)
+        rescue ex : Session::ConnectionLost
+          ctx.response.status = HTTP::Status::SERVICE_UNAVAILABLE
+          ctx.response.print(
+            {status: "error", message: "Couldn't reach remote browser"}.to_json
+          )
         rescue ex
+          ctx.response.status = HTTP::Status::INTERNAL_SERVER_ERROR
           ctx.response.print(
             {status: "exception", trace: ex.inspect_with_backtrace}.to_json
           )
