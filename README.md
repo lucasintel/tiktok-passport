@@ -1,10 +1,15 @@
 # Tiktok Passport
 
-Unpretentious ~6mb docker image that signs Tiktok requests. For now it works
-for my use case, which is a rather polyglot codebase.
+Minimal (really, 6 megabytes) docker image that signs Tiktok requests. For now
+it works for my use case, which is a rather polyglot codebase.
 
 You will have to spin up a pool of selenium instances. You might want use a
 residential proxy as well.
+
+Passport automatically recovers from connection-related failures with the
+remote browser. In this situation, all API calls will fail with `503 Service
+Unavailable` until the connection is reestablished. Just make sure to monitor
+and restart unhealthy/crashed selenium instances.
 
 ## Minimal setup
 
@@ -28,6 +33,7 @@ services:
 
   chrome:
     image: selenium/standalone-chrome
+    restart: "always"
     environment:
       SE_NODE_MAX_SESSIONS: 12
       SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
