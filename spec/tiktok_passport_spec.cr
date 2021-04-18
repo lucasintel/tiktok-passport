@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe TiktokSigner do
+describe TiktokPassport do
   # TODO: Write tests
 
   it "works" do

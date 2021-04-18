@@ -1,0 +1,25 @@
+version: "2.4"
+
+services:
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tiktok-passport:1.0.0
+    environment:
+      SELENIUM_BROWSER_URL: "http://chrome:4444/wd/hub"
+    ports:
+      - 3000:3000
+    depends_on:
+      chrome:
+        condition: service_healthy
+
+  chrome:
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+    healthcheck:
+      test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
+      interval: 15s
+      timeout: 30s
+      retries: 5

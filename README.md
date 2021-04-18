@@ -1,27 +1,65 @@
-# tiktok_signer
+# Tiktok Passport
 
-TODO: Write a description here
+Unpretentious ~6mb docker image that signs Tiktok requests. For now it works
+for my use case, which is a rather polyglot codebase.
 
-## Installation
+You will have to spin up a pool of selenium instances. You might want use a
+residential proxy as well.
 
-TODO: Write installation instructions here
+## Minimal setup
 
-## Usage
+```
+docker run -e SELENIUM_BROWSER_URL="http://localhost:4444/wd/hub" tiktok-passport:1.0.0
+```
 
-TODO: Write usage instructions here
+## Compose
 
-## Development
+```yml
+services:
+  tiktok-passport:
+    image: tiktok-passport:1.0.0
+    environment:
+      SELENIUM_BROWSER_URL: "http://chrome:4444/wd/hub"
+    ports:
+      - 3000:3000
+    depends_on:
+      chrome:
+        condition: service_healthy
 
-TODO: Write development instructions here
+  chrome:
+    image: selenium/standalone-chrome
+    healthcheck:
+      test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
+      interval: 5s
+      timeout: 30s
+      retries: 5
+```
 
-## Contributing
+## Environment variables
 
-1. Fork it (<https://github.com/your-github-user/tiktok_signer/fork>)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+  - `POOL_CAPACITY`
+  - `POOL_TIMEOUT`
+  - `SELENIUM_BROWSER_URL`
+  - `USER_AGENT`
+  - `PORT`
 
-## Contributors
+## Example
 
-- [kandayo](https://github.com/your-github-user) - creator and maintainer
+```
+curl -X POST -d http://tiktok.com/my-request http://localhost:3000
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "signed_at": 1218723927472,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537[...]",
+    "signature": "_02B4Z6wo00f01uM-IxAABIDBGcu.-.8HuWrjDweAANjB7e",
+    "verify_fp": "verify_kmmub8vz_4xImC2zP_AIIB_4lmW_Brwf_Zlr9yhk387F2",
+    "signed_url": "http://tiktok.com/my-request?verifyFp=[...]&_signature=[...]"
+  }
+}
+```

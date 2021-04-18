@@ -1,2 +1,2 @@
 require "spec"
-require "../src/tiktok_signer"
+require "../src/tiktok_passport"

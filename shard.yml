@@ -1,13 +1,21 @@
-name: tiktok_signer
+name: tiktok-passport
 version: 0.1.0
 
 authors:
   - kandayo <kdy@absolab.xyz>
 
 targets:
-  tiktok_signer:
-    main: src/tiktok_signer.cr
+  tiktok-passport:
+    main: src/entrypoint.cr
 
 crystal: 1.0.0
+
+dependencies:
+  pool:
+    github: ysbaddaden/pool
+  router:
+    github: tbrand/router.cr
+  selenium:
+    github: matthewmcgarvey/selenium.cr
 
 license: MIT
