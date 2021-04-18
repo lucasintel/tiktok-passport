@@ -13,8 +13,6 @@ crystal: 1.0.0
 dependencies:
   pool:
     github: ysbaddaden/pool
-  router:
-    github: tbrand/router.cr
   selenium:
     github: matthewmcgarvey/selenium.cr
 

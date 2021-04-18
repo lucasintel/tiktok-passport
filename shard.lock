@@ -4,14 +4,6 @@ shards:
     git: https://github.com/ysbaddaden/pool.git
     version: 0.2.4
 
-  radix:
-    git: https://github.com/luislavena/radix.git
-    version: 0.4.1
-
-  router:
-    git: https://github.com/tbrand/router.cr.git
-    version: 0.2.8
-
   selenium:
     git: https://github.com/matthewmcgarvey/selenium.cr.git
     version: 0.10.0
