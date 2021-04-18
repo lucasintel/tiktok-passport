@@ -28,6 +28,9 @@ services:
 
   chrome:
     image: selenium/standalone-chrome
+    environment:
+      SE_NODE_MAX_SESSIONS: 12
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     healthcheck:
       test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
       interval: 5s
@@ -40,13 +43,12 @@ services:
   - `POOL_CAPACITY`
   - `POOL_TIMEOUT`
   - `SELENIUM_BROWSER_URL`
-  - `USER_AGENT`
   - `PORT`
 
 ## Example
 
 ```
-curl -X POST -d http://tiktok.com/my-request http://localhost:3000
+curl -X POST -d https://m.tiktok.com/api/post/item_list/?aid=1988&secUid=REPLACE&count=30&cursor=0 http://localhost:3000
 ```
 
 Expected response:
@@ -56,10 +58,10 @@ Expected response:
   "status": "ok",
   "data": {
     "signed_at": 1218723927472,
-    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537[...]",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
     "signature": "_02B4Z6wo00f01uM-IxAABIDBGcu.-.8HuWrjDweAANjB7e",
     "verify_fp": "verify_kmmub8vz_4xImC2zP_AIIB_4lmW_Brwf_Zlr9yhk387F2",
-    "signed_url": "http://tiktok.com/my-request?verifyFp=[...]&_signature=[...]"
+    "signed_url": "https://m.tiktok.com/api/post/item_list/?aid=1988&secUid=REPLACE&count=30&cursor=0&verifyFp=verify_kmmub8vz_4xImC2zP_AIIB_4lmW_Brwf_Zlr9yhk387F2&_signature=_02B4Z6wo00f01uM-IxAABIDBGcu.-.8HuWrjDweAANjB7e"
   }
 }
 ```
