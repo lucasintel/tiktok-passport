@@ -41,7 +41,7 @@ module TiktokPassport
             verify_fp: verify_fp,
             signed_url: signed_url
           )
-        rescue ex : Selenium::Error
+        rescue ex
           session.recycle
           sign(url)
         end
