@@ -1,1 +1,19 @@
+.dockerignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Git
 .git
+.gitignore
+README.md
+
+# Specs
+spec/
+
+# CI
+.github/
+
+# App
+.editorconfig
