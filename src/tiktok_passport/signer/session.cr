@@ -34,6 +34,7 @@ module TiktokPassport
 
           Log.info(&.emit("Warming up", id: @session.not_nil!.id))
           navigate_to_target_url
+          register_function
 
           Log.info(&.emit("Ready", id: @session.not_nil!.id))
         end
@@ -69,6 +70,12 @@ module TiktokPassport
       private def navigate_to_target_url
         protect_from_connection_error do
           @session.not_nil!.navigate_to(TARGET_URL)
+        end
+      end
+
+      private def register_function
+        protect_from_connection_error do
+          @session.not_nil!.document_manager.execute_script(Javascript.register_function)
         end
       end
 

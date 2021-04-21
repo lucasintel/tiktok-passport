@@ -6,7 +6,7 @@ module TiktokPassport
       end
 
       def self.register_function
-        %q[{{ read_file("#{__DIR__}/javascript/function.js") }}]
+        {{ read_file("#{__DIR__}/javascript/function.js") }}
       end
     end
   end
