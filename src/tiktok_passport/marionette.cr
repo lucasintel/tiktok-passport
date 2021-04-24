@@ -4,36 +4,36 @@ require "./marionette/*"
 module TiktokPassport
   class Marionette
     {% begin %}
-      # An array of javascript functions to be evaluated on page load.
-      SCRIPTS_TO_EVALUATE_ON_NEW_DOCUMENT =
-        String.build do |str|
-          \{% for key, _index \
-            in [
-                 "#{__DIR__}/marionette/javascript/evasions/utils.js",
-                 "#{__DIR__}/marionette/javascript/evasions/chrome.app.js",
-                 "#{__DIR__}/marionette/javascript/evasions/chrome.csi.js",
-                 "#{__DIR__}/marionette/javascript/evasions/chrome.loadTimes.js",
-                 "#{__DIR__}/marionette/javascript/evasions/chrome.runtime.js",
-                 "#{__DIR__}/marionette/javascript/evasions/iframe.contentWindow.js",
-                 "#{__DIR__}/marionette/javascript/evasions/media.codecs.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.hardwareConcurrency.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.languages.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.permissions.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.plugins.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.vendor.js",
-                 "#{__DIR__}/marionette/javascript/evasions/navigator.webdriver.js",
-                 "#{__DIR__}/marionette/javascript/evasions/webgl.vendor.js",
-                 "#{__DIR__}/marionette/javascript/evasions/window.outerdimensions.js",
-                 "#{__DIR__}/marionette/javascript/signer.js",
-               ] %}
+      # An array of javascript fucntions to execute on page load.
+      SCRIPTS_TO_EXECUTE_ON_PAGE_LOAD = begin
+        buffer = uninitialized String[16]
 
-            \{% if env("MINIFY_JS") %}
-              str << \{{ `uglifyjs --validate #{key}`.stringify }}
-            \{% else %}
-              \{{ raise "For now, only builds with env MINIFY_JS=true are supported" }}
-            \{% end %}
+        \{% for key, index in ["#{__DIR__}/marionette/javascript/evasions/utils.js",
+                               "#{__DIR__}/marionette/javascript/evasions/chrome.app.js",
+                               "#{__DIR__}/marionette/javascript/evasions/chrome.csi.js",
+                               "#{__DIR__}/marionette/javascript/evasions/chrome.loadTimes.js",
+                               "#{__DIR__}/marionette/javascript/evasions/chrome.runtime.js",
+                               "#{__DIR__}/marionette/javascript/evasions/iframe.contentWindow.js",
+                               "#{__DIR__}/marionette/javascript/evasions/media.codecs.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.hardwareConcurrency.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.languages.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.permissions.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.plugins.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.vendor.js",
+                               "#{__DIR__}/marionette/javascript/evasions/navigator.webdriver.js",
+                               "#{__DIR__}/marionette/javascript/evasions/webgl.vendor.js",
+                               "#{__DIR__}/marionette/javascript/evasions/window.outerdimensions.js",
+                               "#{__DIR__}/marionette/javascript/signer.js"] %}
+
+          \{% if env("MINIFY_JS") %}
+            buffer[\{{ index }}] = \{{ `uglifyjs --validate #{key}`.stringify }}
+          \{% else %}
+            buffer[\{{ index }}] = \{{ read_file(key) }}
           \{% end %}
-        end
+        \{% end %}
+
+        buffer
+      end
     {% end %}
 
     # The remote browser desired capabilities.
@@ -140,10 +140,12 @@ module TiktokPassport
 
     # Stealth.
     private def register_functions
-      evaluate_cdp(
-        "Page.addScriptToEvaluateOnNewDocument",
-        {source: SCRIPTS_TO_EVALUATE_ON_NEW_DOCUMENT}
-      )
+      SCRIPTS_TO_EXECUTE_ON_PAGE_LOAD.each do |script|
+        evaluate_cdp(
+          "Page.addScriptToEvaluateOnNewDocument",
+          {source: script}
+        )
+      end
     end
   end
 end
