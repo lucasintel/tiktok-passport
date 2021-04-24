@@ -16,13 +16,10 @@ services:
 
   chrome:
     image: selenium/standalone-chrome
-    ports:
-      - 4444:4444
     environment:
-      SCREEN_HEIGHT: 844
-      SCREEN_WIDTH: 390
       SE_NODE_MAX_SESSIONS: 12
       SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
+      SE_NODE_SESSION_TIMEOUT: 86400
     healthcheck:
       test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
       interval: 15s
