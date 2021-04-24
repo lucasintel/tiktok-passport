@@ -1,11 +1,11 @@
-version: "2.4"
+version: "3.8"
 
 services:
-  runner:
+  tiktok-passport:
     build:
       context: .
       dockerfile: Dockerfile
-    image: tiktok-passport:1.0.0
+    image: tiktok-passport:0.3.0
     environment:
       SELENIUM_BROWSER_URL: "http://chrome:4444/wd/hub"
     ports:
@@ -15,11 +15,16 @@ services:
         condition: service_healthy
 
   chrome:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:90.0.4430.85
     environment:
       SE_NODE_MAX_SESSIONS: 12
       SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
       SE_NODE_SESSION_TIMEOUT: 86400
+      SCREEN_WIDTH: 1920
+      SCREEN_HEIGHT: 1080
+      START_XVFB: "false"
+    volumes:
+      - /dev/shm:/dev/shm
     healthcheck:
       test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
       interval: 15s
