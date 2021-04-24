@@ -7,7 +7,6 @@ module TiktokPassport
         @ctx
       end
 
-
       private def render_exception(ex)
         @ctx.response.status = HTTP::Status::INTERNAL_SERVER_ERROR
         @ctx.response.print({status: "exception", trace: ex.inspect_with_backtrace}.to_json)

@@ -67,7 +67,7 @@ describe TiktokPassport::Marionette::Javascript do
       result = TiktokPassport::Marionette::Javascript.sign("http://tiktok.com\"<b>abc</b>")
       result.should eq(
         <<-JS
-          return byted_acrawler.sign({ url: \"http://tiktok.com\\\"<b>abc<\\/b>\" });
+          return byted_acrawler.sign({ url: "http://tiktok.com\\"<b>abc<\\/b>" });
         JS
       )
     end
