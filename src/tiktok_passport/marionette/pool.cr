@@ -1,16 +1,16 @@
-require "../../ext/pool"
+require "../ext/pool"
 
 module TiktokPassport
-  module Signer
-    class SessionPool
+  class Marionette
+    class Pool
       POOL_CAPACITY = ENV.fetch("POOL_CAPACITY", "1").to_i
       POOL_TIMEOUT  = ENV.fetch("POOL_TIMEOUT", "10").to_f
 
-      @pool : ConnectionPool(Signer::Session)
+      @pool : ConnectionPool(Marionette::Session)
 
       def initialize
         @pool = ConnectionPool.new(capacity: POOL_CAPACITY, timeout: POOL_TIMEOUT) do
-          Session.new(ENV["SELENIUM_BROWSER_URL"])
+          Marionette::Session.new(ENV["SELENIUM_BROWSER_URL"])
         end
       end
 

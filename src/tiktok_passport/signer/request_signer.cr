@@ -1,12 +1,12 @@
 module TiktokPassport
   module Signer
     class RequestSigner
-      def initialize(@session : Signer::Session, url : String)
+      def initialize(@session : Marionette::Session, url : String)
         @uri = URI.parse(url)
         @verify_fp = Utils.generate_verify_fp
       end
 
-      def call : SignedRequest
+      def call : Signer::SignedRequest
         add_query_param("verifyFp", @verify_fp)
 
         # Uses the `window.byted_acrawler` function to sign the request.
@@ -15,7 +15,7 @@ module TiktokPassport
 
         add_query_param("_signature", signature)
 
-        SignedRequest.new(
+        Signer::SignedRequest.new(
           signature: signature,
           verify_fp: @verify_fp,
           signed_url: @uri.to_s,

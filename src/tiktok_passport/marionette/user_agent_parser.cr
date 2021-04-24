@@ -1,5 +1,5 @@
 module TiktokPassport
-  module Signer
+  class Marionette
     class UserAgentParser
       SEPARATORS = [' ', ' ', ';']
       SEED       = [

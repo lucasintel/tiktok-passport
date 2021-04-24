@@ -2,7 +2,7 @@ require "./signer/*"
 
 module TiktokPassport
   module Signer
-    @@pool = Signer::SessionPool.new
+    @@pool = Marionette::Pool.new
 
     def self.sign(url : String) : SignedRequest
       @@pool.with do |session|

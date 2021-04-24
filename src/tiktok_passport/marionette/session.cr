@@ -1,7 +1,5 @@
-require "./session/*"
-
 module TiktokPassport
-  module Signer
+  class Marionette
     class Session
       TARGET_URL = "about:blank"
 
@@ -12,7 +10,7 @@ module TiktokPassport
         Stopped
       end
 
-      @marionette : Signer::Marionette?
+      @marionette : TiktokPassport::Marionette?
       @remote_url : String
 
       def initialize(@remote_url)
@@ -22,11 +20,11 @@ module TiktokPassport
 
       def start
         @mutex.synchronize do
-          Log.info { "Starting up a new Signer::Marionette session" }
+          Log.info { "Starting up a new TiktokPassport::Marionette session" }
           stop
 
           @marionette = protect_from_connection_error do
-            Signer::Marionette.new(@remote_url)
+            TiktokPassport::Marionette.new(@remote_url)
           end
 
           if marionette = @marionette
@@ -34,7 +32,7 @@ module TiktokPassport
             transition_to(State::Started)
 
             Log.info(&.emit("Warming up", id: marionette.id))
-            marionette.not_nil!.navigate_to(TARGET_URL)
+            marionette.navigate_to(TARGET_URL)
 
             Log.info(&.emit("Ready", id: marionette.id))
           end
@@ -56,12 +54,12 @@ module TiktokPassport
         end
       end
 
-      def navigator_info : Signer::NavigatorInfo
+      def navigator_info : Marionette::NavigatorInfo
         protect_from_connection_error do
           @navigator_info ||=
             begin
               response = @marionette.not_nil!.evaluate(Javascript.navigator_info)
-              Signer::NavigatorInfo.from_json(response)
+              Marionette::NavigatorInfo.from_json(response)
             end
         end
       end

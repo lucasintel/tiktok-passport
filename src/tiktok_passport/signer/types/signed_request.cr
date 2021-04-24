@@ -7,7 +7,7 @@ module TiktokPassport
       @signature : String
       @verify_fp : String
       @signed_url : String
-      @navigator : NavigatorInfo
+      @navigator : Marionette::NavigatorInfo
 
       def initialize(@signature, @verify_fp, @signed_url, @navigator)
       end
