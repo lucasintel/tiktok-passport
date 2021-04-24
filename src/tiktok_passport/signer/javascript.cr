@@ -28,8 +28,18 @@ module TiktokPassport
         JS
       end
 
-      def self.register_function
-        {{ read_file("#{__DIR__}/javascript/function.js") }}
+      def self.navigator_info : String
+        <<-JS
+          return {
+            user_agent: navigator.userAgent,
+            screen_width: screen.width,
+            screen_height: screen.height,
+            browser_language: navigator.language,
+            browser_platform: navigator.platform,
+            browser_name: navigator.appCodeName,
+            browser_version: navigator.appVersion,
+          }
+        JS
       end
     end
   end

@@ -72,4 +72,23 @@ describe TiktokPassport::Signer::Javascript do
       )
     end
   end
+
+  describe ".navigator_info" do
+    it "returns the navigator_info function" do
+      result = TiktokPassport::Signer::Javascript.navigator_info
+      result.should eq(
+        <<-JS
+          return {
+            user_agent: navigator.userAgent,
+            screen_width: screen.width,
+            screen_height: screen.height,
+            browser_language: navigator.language,
+            browser_platform: navigator.platform,
+            browser_name: navigator.appCodeName,
+            browser_version: navigator.appVersion,
+          }
+        JS
+      )
+    end
+  end
 end
