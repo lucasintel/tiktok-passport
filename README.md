@@ -1,20 +1,24 @@
-# Tiktok Passport
+# TikTok Passport
 
-Minimal (really, 6 megabytes) docker image that signs Tiktok requests. For now,
-it works for my use case. You will have to spin up a pool of selenium
-instances.
+Minimal (really, ~6 megabytes), high-performance docker image that signs TikTok
+API requests. It might work for you if you need to scale the signature server
+separately, or if you have multiple services that interact with TikTok API.
 
-Tiktok Passport automatically recovers from connection-related failures with
+You will have to spin up a pool of selenium instances.
+
+To prevent detection, TikTok Passport applies evasion strategies ported from
+`puppeteer-extra-plugin-stealth` and `selenium-stealth`. You can find the
+stealth test at the examples folder.
+
+TikTok Passport automatically recovers from connection-related failures with
 the remote browser. Just make sure to monitor and restart unhealthy/crashed
 selenium instances.
-
-To prevent detection, [evasion strategies](https://github.com/kandayo/tiktok-passport/tree/main/src/tiktok_passport/marionette/javascript/evasions)
-ported from `puppeteer-extra-plugin-stealth` are included. You can find the
-stealth test at the examples folder.
 
 ## Minimal setup
 
 ```yml
+version: "3.8"
+
 services:
   tiktok-passport:
     build:
@@ -31,24 +35,28 @@ services:
 
   chrome:
     image: selenium/standalone-chrome:90.0.4430.85
-    restart: "always"
     environment:
       SE_NODE_MAX_SESSIONS: 12
       SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
       SE_NODE_SESSION_TIMEOUT: 86400
+      SCREEN_WIDTH: 1920
+      SCREEN_HEIGHT: 1080
+      START_XVFB: "false"
+    volumes:
+      - /dev/shm:/dev/shm
     healthcheck:
       test: "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"
-      interval: 5s
+      interval: 15s
       timeout: 30s
       retries: 5
 ```
 
 ## Environment variables
 
-  - `POOL_CAPACITY`
-  - `POOL_TIMEOUT`
-  - `SELENIUM_BROWSER_URL`
-  - `PORT`
+  - `POOL_CAPACITY` (default: 1)
+  - `POOL_TIMEOUT` (default: 5 seconds)
+  - `SELENIUM_BROWSER_URL` (default: nil, **required***)
+  - `PORT` (default: 3000)
 
 ## Example
 
@@ -83,3 +91,46 @@ curl -X POST \
   }
 }
 ```
+
+## As a library
+
+```cr
+require "tiktok-passport"
+
+pool = TiktokPassport::Marionette::Pool.new("http://chrome:4444/wd/hub", 5)
+
+uri = URI.new(
+  scheme: "https",
+  host: YourApp.config.tiktok_host,
+  path: "/api/post/item_list/",
+  query: URI::Params.build do |query|
+    query.add("aid", "1988")
+    query.add("secUid", "MS4wLjABAAAAv7iSuuXDJGDvJkmH_vz1qkDZYo1apxgzaxdBSeIuPiM")
+    query.add("count", 30)
+    query.add("cursor", "1571445154000")
+    # [...]
+  end
+)
+
+pool.with do |session|
+  session.sign(uri.to_s) # => Signer::SignedRequest
+end
+```
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/kandayo/tiktok-passport.
+
+1. Fork it (<https://github.com/kandayo/tiktok-passport/fork>)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
+
+## Contributors
+
+- [kandayo](https://github.com/kandayo) - creator and maintainer
+
+## License
+
+The lib is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
