@@ -1,5 +1,5 @@
 module TiktokPassport
-  module Signer
+  class Marionette
     module Javascript
       JAVASCRIPT_ESCAPE_REGEX = /(\\|<\/|\r\n|\x{2028}|\x{2029}|[\n\r"']|[`]|[$])/
       JAVASCRIPT_ESCAPE_MAP   = {
