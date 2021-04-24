@@ -4,9 +4,9 @@ require "./marionette/*"
 module TiktokPassport
   module Signer
     class Marionette
-      # An array of javascript functions to be evaluated on page load.
-      SCRIPTS_TO_EVALUATE_ON_NEW_DOCUMENT =
-        {% begin %}
+      {% begin %}
+        # An array of javascript functions to be evaluated on page load.
+        SCRIPTS_TO_EVALUATE_ON_NEW_DOCUMENT =
           String.build do |str|
             \{% for key, _index \
               in [
@@ -29,13 +29,13 @@ module TiktokPassport
                  ] %}
 
               \{% if env("MINIFY_JS") && !key.includes?("signer.js") %}
-                str << `uglifyjs --validate \{{ key }}`
+                str << \{{ `uglifyjs --validate #{key}`.stringify }}
               \{% else %}
                 str << \{{ read_file(key) }}
               \{% end %}
             \{% end %}
           end
-        {% end %}
+      {% end %}
 
       # The remote browser desired capabilities.
       CHROME_CAPABILITIES =
