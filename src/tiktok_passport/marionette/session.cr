@@ -79,7 +79,7 @@ module TiktokPassport
       private def protect_from_connection_error
         yield
       rescue ex : Socket::Error | Socket::ConnectError | IO::Error | Selenium::Error
-        raise Session::ConnectionLost.new
+        raise Marionette::ConnectionLost.new
       end
     end
   end

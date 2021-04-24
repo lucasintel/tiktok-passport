@@ -11,17 +11,22 @@ module TiktokPassport
 
       def call
         body = @ctx.request.body
-        return render_unprocessable_entity! if body.nil?
-
-        url = body.gets_to_end
+        return render(422, "Request body cannot be empty") if body.nil?
 
         begin
+          parsed_body = JSON.parse(body.gets_to_end)
+
+          url = parsed_body["url"].as_s?
+          return render(422, "URL cannot be blank") if url.nil?
+
           signature = Signer.sign(url)
           @ctx.response.print({status: "ok", data: signature}.to_json)
-        rescue ex : Signer::Session::ConnectionLost
-          render_service_unavailable!
+        rescue ex : Marionette::ConnectionLost
+          render(503, "Couldn't reach remote browser")
+        rescue ex : JSON::ParseException
+          render(422, "JSON::ParseException: #{ex.message}")
         rescue ex
-          render_exception!(ex)
+          render_exception(ex)
         end
       end
     end
