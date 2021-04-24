@@ -1,4 +1,4 @@
-require "../ext/pool"
+require "../../ext/pool"
 
 module TiktokPassport
   module Signer
@@ -16,7 +16,7 @@ module TiktokPassport
 
       def with
         @pool.connection do |session|
-          session.start
+          session.start if session.stopped?
           yield(session)
         rescue ex
           session.stop

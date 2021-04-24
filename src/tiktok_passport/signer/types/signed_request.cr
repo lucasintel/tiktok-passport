@@ -3,13 +3,13 @@ module TiktokPassport
     struct SignedRequest
       include JSON::Serializable
 
-      @signed_at : Int64
-      @user_agent : String
+      @signed_at : Int64 = Time.utc.to_unix_ms
       @signature : String
       @verify_fp : String
       @signed_url : String
+      @navigator : NavigatorInfo
 
-      def initialize(@signed_at, @user_agent, @signature, @verify_fp, @signed_url)
+      def initialize(@signature, @verify_fp, @signed_url, @navigator)
       end
     end
   end
