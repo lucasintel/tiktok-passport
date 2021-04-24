@@ -4,14 +4,13 @@ Minimal (really, 6 megabytes) docker image that signs Tiktok requests. For now,
 it works for my use case. You will have to spin up a pool of selenium
 instances.
 
-Passport automatically recovers from connection-related failures with the
-remote browser. In this situation, all API calls will fail with `503 Service
-Unavailable` until the connection is reestablished. Just make sure to monitor
-and restart unhealthy/crashed selenium instances.
+Tiktok Passport automatically recovers from connection-related failures with
+the remote browser. Just make sure to monitor and restart unhealthy/crashed
+selenium instances.
 
-Passport uses [**evasion strategies**](https://github.com/kandayo/tiktok-passport/tree/main/src/tiktok_passport/marionette/javascript/evasions)
-ported from `puppeteer-extra-plugin-stealth` to prevent detection. You can find
-the stealth test at the examples folder.
+To prevent detection, [evasion strategies](https://github.com/kandayo/tiktok-passport/tree/main/src/tiktok_passport/marionette/javascript/evasions)
+ported from `puppeteer-extra-plugin-stealth` are included. You can find the
+stealth test at the examples folder.
 
 ## Minimal setup
 
@@ -31,7 +30,7 @@ services:
         condition: service_healthy
 
   chrome:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:90.0.4430.85
     restart: "always"
     environment:
       SE_NODE_MAX_SESSIONS: 12
@@ -74,12 +73,12 @@ curl -X POST \
     "signed_url": "https://m.tiktok.com/api/post/item_list/?aid=1988&secUid=SECUID&count=30&cursor=0&verifyFp=verify_knvc19xz_GHZpp3IL_sSnf_4ZTf_AZfo_FNbSIOPCkS00&_signature=_02B4Z6wo00f01oiMkTwAOIBGG5Gn74kktFaIjbWAAMKsaf",
     "navigator":{
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (Windows NT 10.0; Win64; x64) Chrome/88.0.4324.96 Safari/537.36",
-      "screen_width": 1920,
-      "screen_height": 1080,
+      "browser_name": "Mozilla",
+      "browser_version": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (Windows NT 10.0; Win64; x64) Chrome/88.0.4324.96 Safari/537.36",
       "browser_language": "en-US",
       "browser_platform": "Win32",
-      "browser_name": "Mozilla",
-      "browser_version": "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (Windows NT 10.0; Win64; x64) Chrome/88.0.4324.96 Safari/537.36"
+      "screen_width": 1920,
+      "screen_height": 1080
     }
   }
 }
