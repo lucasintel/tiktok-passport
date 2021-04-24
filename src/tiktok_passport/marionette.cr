@@ -27,10 +27,10 @@ module TiktokPassport
                  "#{__DIR__}/marionette/javascript/signer.js",
                ] %}
 
-            \{% if env("MINIFY_JS") && !key.includes?("signer.js") %}
+            \{% if env("MINIFY_JS") %}
               str << \{{ `uglifyjs --validate #{key}`.stringify }}
             \{% else %}
-              str << \{{ read_file(key) }}
+              \{{ raise "For now, only builds with env MINIFY_JS=true are supported" }}
             \{% end %}
           \{% end %}
         end

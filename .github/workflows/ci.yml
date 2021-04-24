@@ -9,6 +9,8 @@ on:
 
 env:
   CRYSTAL_VERSION: '1.0.0'
+  SELENIUM_BROWSER_URL: 'http://localhost:4444'
+  MINIFY_JS: true
   CI: true
 
 jobs:
@@ -30,5 +32,9 @@ jobs:
       - uses: oprypin/install-crystal@v1
         with:
           crystal: ${{ env.CRYSTAL_VERSION }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm i -g uglify-js
       - run: shards install --ignore-crystal-version
       - run: crystal spec
