@@ -8,9 +8,9 @@ module TiktokPassport
 
       @pool : ConnectionPool(Marionette::Session)
 
-      def initialize
+      def initialize(remote_url = TiktokPassport.config.selenium_browser_url)
         @pool = ConnectionPool.new(capacity: POOL_CAPACITY, timeout: POOL_TIMEOUT) do
-          Marionette::Session.new(ENV["SELENIUM_BROWSER_URL"])
+          Marionette::Session.new(remote_url)
         end
       end
 

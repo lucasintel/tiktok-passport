@@ -33,4 +33,10 @@ module TiktokPassport
 
     signal.receive
   end
+
+  @@config = TiktokPassport::Config.new
+
+  def self.config : TiktokPassport::Config
+    @@config
+  end
 end
