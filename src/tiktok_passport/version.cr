@@ -1,3 +1,3 @@
 module TiktokPassport
-  VERSION = "0.3.0"
+  VERSION = {{ `shards version "#{__DIR__}"`.strip.stringify }}
 end
