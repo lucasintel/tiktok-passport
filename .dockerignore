@@ -7,13 +7,13 @@ docker-compose.yml
 # Git
 .git
 .gitignore
-README.md
-
-# Specs
-spec/
+*.md
+!README.md
 
 # CI
 .github/
 
 # App
 .editorconfig
+examples/
+spec/
