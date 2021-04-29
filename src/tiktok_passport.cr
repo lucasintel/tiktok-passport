@@ -6,6 +6,8 @@ require "selenium"
 require "./tiktok_passport/*"
 
 module TiktokPassport
+  class_getter config = TiktokPassport::Config.new
+
   Log = ::Log.for(self)
 
   enum Control
@@ -32,11 +34,5 @@ module TiktokPassport
     server.start
 
     signal.receive
-  end
-
-  @@config = TiktokPassport::Config.new
-
-  def self.config : TiktokPassport::Config
-    @@config
   end
 end
