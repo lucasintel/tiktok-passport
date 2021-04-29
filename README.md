@@ -1,18 +1,19 @@
 # TikTok Passport
 
-Minimal (really, ~6 megabytes), high-performance docker image that signs TikTok
-API requests. It might work for you if you need to scale the signature server
-separately, or if you have multiple services that interact with TikTok API.
+Minimal (shipped as a 6MB docker image), high-performance service that signs
+TikTok API requests. It might work for you if you need to scale the signature
+server separately, or if you have multiple services that interact with TikTok
+API.
 
 You will have to spin up a pool of selenium instances.
 
-To prevent detection, TikTok Passport applies evasion strategies ported from
-`puppeteer-extra-plugin-stealth` and `selenium-stealth`. You can find the
-stealth test at the examples folder.
+ - To prevent headless browser detection, TikTok Passport applies evasion
+   strategies ported from `puppeteer-extra-plugin-stealth` and `selenium-stealth`.
+   You can find the stealth test at the examples folder.
 
-TikTok Passport automatically recovers from connection-related failures with
-the remote browser. Just make sure to monitor and restart unhealthy/crashed
-selenium instances.
+ - TikTok Passport automatically recovers from connection-related failures with
+   the remote browser. Just make sure to monitor and restart unhealthy/crashed
+   selenium instances.
 
 ## Minimal setup
 
@@ -53,10 +54,12 @@ services:
 
 ## Environment variables
 
-  - `POOL_CAPACITY` (default: 1)
-  - `POOL_TIMEOUT` (default: 5 seconds)
-  - `SELENIUM_BROWSER_URL` (default: nil, **required***)
-  - `PORT` (default: 3000)
+```
+POOL_CAPACITY=1        # Maximum amount of Selenium sessions in the pool. (Default: 1)
+POOL_TIMEOUT=5         # Seconds to wait before timeout while doing a checkout. (Default: 5 seconds)
+SELENIUM_BROWSER_URL=  # Remote browser URL. Required.
+PORT=3000              # Port to listen to. (Default: 3000)
+```
 
 ## Example
 
@@ -113,7 +116,8 @@ uri = URI.new(
 )
 
 pool.with do |session|
-  session.sign(uri.to_s) # => Signer::SignedRequest
+  signed_request = session.sign(uri.to_s)
+  puts signed_request.signed_url # => Use this URL to perform the request.
 end
 ```
 
